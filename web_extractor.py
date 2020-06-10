@@ -50,9 +50,13 @@ def google(url):
     except requests.exceptions.HTTPError as err:
         raise SystemExit(err)
 
+def dropbox(url):
+    return url.replace("?dl=0", "?dl=1")
+
 domain_crawler_mapper = {
-    "mediafire": mediafire
-    "google": google
+    "mediafire": mediafire,
+    "google": google,
+    "dropbox": dropbox
     }
 
 def guess_type_of(link):
