@@ -46,12 +46,24 @@ def google(url):
                 break
     
         url = FILE_URL.format(id=id, confirm='')
-        return requests.get(url, headers={'Cookie': '','User-Agent': 'Mozilla/5.0'}).url
+        response = requests.get(url, headers={'Cookie': '','User-Agent': 'Mozilla/5.0'})
+        if(response.status_code == 404):
+            print("Invalid Google Drive URL \n")
+        else:
+            return response.url
     except requests.exceptions.HTTPError as err:
         raise SystemExit(err)
 
 def dropbox(url):
-    return url.replace("?dl=0", "?dl=1")
+    try:
+        response = requests.get(url.replace("?dl=0", "?dl=1"), headers={'Cookie': '','User-Agent': 'Mozilla/5.0'})
+        if(response.status_code == 404):
+            print("Invalid Dropbox URL \n")
+        else:
+            return response.url
+    except requests.exceptions.HTTPError as err:
+        raise SystemExit(err)
+
 
 domain_crawler_mapper = {
     "mediafire": mediafire,
