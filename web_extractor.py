@@ -22,11 +22,14 @@ def getDomain(url):
 
 def mediafire(url):
     try:
-        page = requests.get(url).text
-        soup = BeautifulSoup(page,features='lxml')
-        x=soup.findAll("a", {"class": "input popsok"})
-        for a in x:
-            return a['href']
+        response = requests.get(url)
+        if(response.status_code == 404):
+            print("Invalid Mediafire URL \n")
+        else:
+            soup = BeautifulSoup(response.text,features='lxml')
+            x=soup.findAll("a", {"class": "input popsok"})
+            for a in x:
+                return a['href']
     except requests.exceptions.HTTPError as err:
         raise SystemExit(err)
 
@@ -64,11 +67,22 @@ def dropbox(url):
     except requests.exceptions.HTTPError as err:
         raise SystemExit(err)
 
+def github(url):
+    try:
+        response = requests.get(url+"/archive/master.zip", headers={'Cookie': '','User-Agent': 'Mozilla/5.0'})
+        if(response.status_code == 404):
+            print("Invalid Github URL \n")
+        else:
+            return url+"/archive/master.zip"
+    except requests.exceptions.HTTPError as err:
+        raise SystemExit(err)
+
 
 domain_crawler_mapper = {
     "mediafire": mediafire,
     "google": google,
-    "dropbox": dropbox
+    "dropbox": dropbox,
+    "github": github
     }
 
 def guess_type_of(link):
