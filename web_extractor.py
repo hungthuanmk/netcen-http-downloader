@@ -30,8 +30,29 @@ def mediafire(url):
     except requests.exceptions.HTTPError as err:
         raise SystemExit(err)
 
+def google(url):
+    try:
+        FILE_URL = 'https://docs.google.com/uc?export=download&id={id}&confirm={confirm}'
+        ID_PATTERNS = [
+        re.compile('/file/d/([0-9A-Za-z_-]{10,})(?:/|$)', re.IGNORECASE),
+        re.compile('id=([0-9A-Za-z_-]{10,})(?:&|$)', re.IGNORECASE),
+        re.compile('([0-9A-Za-z_-]{10,})', re.IGNORECASE)
+        ]
+    
+        for pattern in ID_PATTERNS:
+            match = pattern.search(url)
+            if match:
+                id = match.group(1)
+                break
+    
+        url = FILE_URL.format(id=id, confirm='')
+        return requests.get(url, headers={'Cookie': '','User-Agent': 'Mozilla/5.0'}).url
+    except requests.exceptions.HTTPError as err:
+        raise SystemExit(err)
+
 domain_crawler_mapper = {
     "mediafire": mediafire
+    "google": google
     }
 
 def guess_type_of(link):
