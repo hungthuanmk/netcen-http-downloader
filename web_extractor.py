@@ -22,7 +22,7 @@ def getDomain(url):
 
 def mediafire(url):
     try:
-        response = requests.get(url)
+        response = requests.get(url,allow_redirects=False)
         if(response.status_code == 404):
             print("Invalid Mediafire URL \n")
         else:
@@ -77,12 +77,27 @@ def github(url):
     except requests.exceptions.HTTPError as err:
         raise SystemExit(err)
 
+def youtube(url):
+    try:
+        with requests.Session() as session:
+            response = session.post("https://keepvid.works/?url="+url+"#dlURL")
+            soup = BeautifulSoup(session.get(response.url).text,features='lxml')
+            x=soup.findAll("a", {"class": "btn btn-lg btn-danger"})
+            if (x != []):
+                for a in x:
+                    return a['href']
+            else:
+                print("Invalid Youtube URL \n")
+    except requests.exceptions.HTTPError as err:
+        raise SystemExit(err)
+
 
 domain_crawler_mapper = {
     "mediafire": mediafire,
     "google": google,
     "dropbox": dropbox,
-    "github": github
+    "github": github,
+    "youtube": youtube
     }
 
 def guess_type_of(link):
@@ -100,10 +115,8 @@ def guess_type_of(link):
             
         
        
-data = guess_type_of('http://www.mediafire.com/file/8igfr1r4c9a468s/Luyen_am.doc/file')
-
+data = guess_type_of('https://www.youtube.com/watch?v=owEKTfe1Gno')
 print(data)
-
 
 
 
