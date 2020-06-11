@@ -91,13 +91,28 @@ def youtube(url):
     except requests.exceptions.HTTPError as err:
         raise SystemExit(err)
 
+def facebook(url):
+    try:
+        with requests.Session() as session:
+            response = session.post("https://keepvid.works/?url="+url+"#dlURL")
+            soup = BeautifulSoup(session.get(response.url).text,features='lxml')
+            x=soup.findAll("a", {"class": "btn btn-lg btn-danger"})
+            if (x != []):
+                for a in x:
+                    return a['href']
+            else:
+                print("Invalid Youtube URL \n")
+    except requests.exceptions.HTTPError as err:
+        raise SystemExit(err)
+
 
 domain_crawler_mapper = {
     "mediafire": mediafire,
     "google": google,
     "dropbox": dropbox,
     "github": github,
-    "youtube": youtube
+    "youtube": youtube,
+    "facebook": facebook
     }
 
 def guess_type_of(link):
@@ -115,7 +130,7 @@ def guess_type_of(link):
             
         
        
-data = guess_type_of('https://www.youtube.com/watch?v=owEKTfe1Gno')
+data = guess_type_of('https://www.facebook.com/rgb.vn/videos/1396783103844096/')
 print(data)
 
 
