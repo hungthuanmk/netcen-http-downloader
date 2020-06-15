@@ -129,12 +129,6 @@ def guess_type_of(link):
         return link
             
         
-       
-data = guess_type_of('https://www.facebook.com/rgb.vn/videos/1396783103844096/')
-print(data)
-
-
-
-
-
-
+if __name__ == "__main__":       
+    data = guess_type_of('https://www.facebook.com/rgb.vn/videos/1396783103844096/')
+    print(data)
