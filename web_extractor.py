@@ -130,7 +130,7 @@ domain_crawler_mapper = {
 def guess_type_of(link):
     link_type, _ = mimetypes.guess_type(link)
     if link_type is None:
-        link_type = requests.get(link).headers
+        link_type = requests.head(link).headers
     if('Content-Type' in link_type):  # True if this url is text/html, False if is a file
         web_domain = getDomain(link)
         if web_domain in domain_crawler_mapper:
