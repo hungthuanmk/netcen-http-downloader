@@ -71,12 +71,15 @@ def join_frames(filename: str, frames_count: int, delete_frames: bool = True) ->
     
 
 
-def download_with_progress_bar(file_info: dict, frames_count: int=12, filename: str="temp"):
+def download_with_progress_bar(file_info: dict, frames_count: int=12, filename: str="temp", verbose=False):
     frames_count = min(frames_count, 32)
     total_size = file_info["Content-Length"]
     frame_size = round(total_size/frames_count)
-    print("Total file size", total_size)
-    print("Each frame size", frame_size)
+
+    if verbose:
+        print("Total file size", total_size)
+        print("Each frame size", frame_size)
+        
     frames_config = []
     byte_pos = 0
     for frame_i in range(frames_count):
