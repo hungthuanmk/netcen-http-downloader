@@ -94,7 +94,7 @@ def youtube(url):
             x = soup.findAll("a", {"class": "btn btn-lg btn-danger"})
             if (x != []):
                 for a in x:
-                    return a['href']
+                    return (a['download'],a['href'])
             else:
                 print("Invalid Youtube URL \n")
     except requests.exceptions.HTTPError as err:
