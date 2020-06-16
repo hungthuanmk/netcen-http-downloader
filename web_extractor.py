@@ -74,14 +74,15 @@ def dropbox(url):
 
 def github(url):
     try:
-        response = requests.get(
-            url+"/archive/master.zip", headers={'Cookie': '', 'User-Agent': 'Mozilla/5.0'})
+        response = requests.head(
+            url, headers={'Cookie': '', 'User-Agent': 'Mozilla/5.0'})
         if(response.status_code == 404):
             print("Invalid Github URL \n")
         else:
             return url+"/archive/master.zip"
     except requests.exceptions.HTTPError as err:
         raise SystemExit(err)
+
 
 
 def youtube(url):
