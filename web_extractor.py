@@ -49,14 +49,13 @@ def google(url):
             if match:
                 id = match.group(1)
                 break
-
-        url = FILE_URL.format(id=id, confirm='')
         response = requests.get(
             url, headers={'Cookie': '', 'User-Agent': 'Mozilla/5.0'})
         if(response.status_code == 404):
             print("Invalid Google Drive URL \n")
         else:
-            return response.url
+            soup = BeautifulSoup(response.text,'lxml')
+            return (soup.findAll("meta", {"itemprop": "name"})[0]['content'],FILE_URL.format(id=id, confirm=''))
     except requests.exceptions.HTTPError as err:
         raise SystemExit(err)
 
