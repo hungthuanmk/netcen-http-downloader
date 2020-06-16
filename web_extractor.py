@@ -116,6 +116,26 @@ def facebook(url):
     except requests.exceptions.HTTPError as err:
         raise SystemExit(err)
 
+def get_file_name(url):
+    web_domain = getDomain(url)
+    if(web_domain == 'googleusercontent'):
+        response = requests.get(url.split("?e=download")[0].split("/")[-1])
+        if(response.status_code == 404):
+            print("Invalid URL \n")
+        else:
+            soup = BeautifulSoup(response.text,'lxml')
+            return soup.findAll("meta", {"itemprop": "name"})[0]['content']
+    elif(web_domain == "googlevideo"):
+        return "videoplayback.mp4"
+    elif(web_domain == 'dropboxusercontent'):
+        response = requests.head(url)
+        if(response.status_code == 404):
+            print("Invalid URL \n")
+        else:
+            return response.headers['Content-Disposition'].split("'")[-1]
+    else:
+        return re.search(r'(?<=\/)[^\/\?#]+(?=[^\/]*$)', url).group(0)
+
 
 domain_crawler_mapper = {
     "mediafire": mediafire,
