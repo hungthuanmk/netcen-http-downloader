@@ -136,6 +136,14 @@ def get_file_name(url):
     else:
         return re.search(r'(?<=\/)[^\/\?#]+(?=[^\/]*$)', url).group(0)
 
+def redirect_url(url):
+    web_domain = getDomain(url)
+    if(web_domain == 'github'):
+            return requests.head(url)
+    else:
+        with requests.Session() as session:
+            return session.head(session.post(url).url)
+
 
 domain_crawler_mapper = {
     "mediafire": mediafire,
