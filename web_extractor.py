@@ -11,14 +11,14 @@ import mimetypes
 import re
 
 
-def getDomain(url):
-    pat = r'((https?):\/\/)?(\w+\.)*(?P<domain>\w+)\.(\w+)(\/.*)?'
-    m = re.match(pat, url)
-    if m:
-        domain = m.group('domain')
-        return domain
-    else:
-        return False
+def getDomain(url):    
+        parts = re.split("\/", url)
+        match = re.match("([\w\-]+\.)*([\w\-]+\.\w{2,6}$)", parts[2]) 
+        if match != None:
+            if re.search("\.uk", parts[2]): 
+                match = re.match("([\w\-]+\.)*([\w\-]+\.[\w\-]+\.\w{2,6}$)", parts[2])
+            return match.group(2).split(".")[0]
+        else: return ''
 
 
 def mediafire(url):
