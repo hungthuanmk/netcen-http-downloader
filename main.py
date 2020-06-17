@@ -40,9 +40,12 @@ def main():
         file_info = get_file_info(file_url)
         print_file_info(file_info)
 
-        connections_count = input("\nEnter number of connections (default 2): ")
-        connections_count = DEFAULT_CONNECTIONS if len(
-            connections_count) == 0 else int(connections_count)
+        if file_info["Single-Connection-Only"] == True:
+            connections_count = 1
+        else:
+            connections_count = input("\nEnter number of connections (default 2): ")
+            connections_count = DEFAULT_CONNECTIONS if len(
+                connections_count) == 0 else int(connections_count)
 
         folder_path = os.path.join(os.getcwd(), DEFAULT_DOWNLOAD_FOLDER)
         os.makedirs(folder_path, exist_ok=True)

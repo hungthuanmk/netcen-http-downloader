@@ -28,8 +28,8 @@ def print_file_info(file_info: dict) -> None:
             file_size /= 1024 # get corresponded size in next unit
         return str(round(file_size, 2)) + " " + size_unit[size_unit_i]
     
-    print("File type:", file_info["Content-Type"])
-    print("File size:", get_pretty_file_size(file_info["Content-Length"]))
+    print("File type:", file_info["Content-Type"] if "Content-Type" in file_info else "unknown")
+    print("File size:", get_pretty_file_size(file_info["Content-Length"]) if "Content-Length" in file_info else "unknown")
 
 
 def get_file_info(file_url: str, verbose: bool = False, proxies: dict = None) -> dict:
@@ -38,6 +38,16 @@ def get_file_info(file_url: str, verbose: bool = False, proxies: dict = None) ->
     """
     print("\n-> Gathering file information... ", end="", flush=True)
     head_res = requests.head(file_url, proxies=proxies)
+    print(head_res.status_code)
+    if head_res.status_code == 302:
+        print(" -> Code 302 Found. Redirecting...")
+        head_res = requests.head(head_res.headers.get("Location"), proxies=proxies)
+
+    print(" -> Code", head_res.status_code)
+    if head_res.status_code == 405: # gg drive handling
+        print(" -> Supported single connection only")
+        return {"Single-Connection-Only": True, "File-URL": file_url}
+
     assert head_res.status_code == 200 # make sure successful request
     res_info = head_res.headers # take info from "head"-request headers
     if verbose: 
@@ -47,6 +57,7 @@ def get_file_info(file_url: str, verbose: bool = False, proxies: dict = None) ->
     if all(required_attribs in res_info for required_attribs in file_info): # make sure all required attributes are present
         for attrib_key in file_info:
             file_info[attrib_key] = res_info[attrib_key]
+        file_info["Single-Connection-Only"] = False
         file_info["Content-Length"] = int(file_info["Content-Length"])
         file_info["File-URL"] = file_url
         print("Done")
@@ -72,6 +83,16 @@ def join_frames(filename: str, frames_count: int, delete_frames: bool = True) ->
 
 
 def download_with_progress_bar(file_info: dict, frames_count: int=12, filename: str="temp", verbose=False):
+
+    if file_info["Single-Connection-Only"] == True:
+        print("\n-> Downloading (unknown file size)...", end="", flush=True)
+        download = requests.get(file_info["File-URL"])
+        with open(filename, 'wb') as f:
+            f.write(download.content)
+        print("Done")
+        return
+
+
     frames_count = min(frames_count, 32)
     total_size = file_info["Content-Length"]
     frame_size = round(total_size/frames_count)
