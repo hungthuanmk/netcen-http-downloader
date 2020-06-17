@@ -36,7 +36,7 @@ def get_file_info(file_url: str, verbose: bool = False, proxies: dict = None) ->
     """
     Get file information in headers from a HEAD request
     """
-    print("-> Gathering file information... ", end="", flush=True)
+    print("\n-> Gathering file information... ", end="", flush=True)
     head_res = requests.head(file_url, proxies=proxies)
     assert head_res.status_code == 200 # make sure successful request
     res_info = head_res.headers # take info from "head"-request headers
@@ -57,7 +57,7 @@ def get_file_info(file_url: str, verbose: bool = False, proxies: dict = None) ->
 
 
 def join_frames(filename: str, frames_count: int, delete_frames: bool = True) -> None:
-    print("-> Joining {} downloaded frames...".format(frames_count), end="")
+    print("\n-> Joining {} downloaded frames...".format(frames_count), end="")
     with open(filename, "wb") as target_file:
         for i in range(frames_count):
             with open("{}.part{}".format(filename, str(i)), "rb") as f:
@@ -79,7 +79,7 @@ def download_with_progress_bar(file_info: dict, frames_count: int=12, filename: 
     if verbose:
         print("Total file size", total_size)
         print("Each frame size", frame_size)
-        
+
     frames_config = []
     byte_pos = 0
     for frame_i in range(frames_count):
@@ -108,7 +108,7 @@ def download_with_progress_bar(file_info: dict, frames_count: int=12, filename: 
         if total_size != 0 and pb.n != total_size:
             print("ERROR, something went wrong")
 
-    print("-> Downloading...", flush=True)
+    print("\n-> Downloading...", flush=True)
     download_begin_time = time.time()
     for frame_config in frames_config:
         new_thread = threading.Thread(target=download_frame_job, args=(frame_config,), daemon=True)

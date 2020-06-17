@@ -33,9 +33,9 @@ def main():
     url = input("Enter URL here: ")
 
     try:
-        print("-> Crawling...", end="", flush=True)
+        print("\n-> Crawling...", end="", flush=True)
         file_url = guess_type_of(url)
-        print("Done. File URL:", file_url)
+        print("Done\nFile URL:", file_url)
 
         file_info = get_file_info(file_url)
         print_file_info(file_info)
@@ -48,16 +48,17 @@ def main():
         #     initialdir="/", title="Save file as", filetypes=(("jpeg files", "*.jpg"), ("All files", "*.*")))
         # print(file_path)
         folder_path = os.path.join(os.getcwd(), DEFAULT_DOWNLOAD_FOLDER)
+        os.makedirs(folder_path, exist_ok=True)
         file_name = "a.mp4"
         file_path = os.path.join(folder_path, file_name)
 
         download_with_progress_bar(
             file_info, frames_count=connections_count, filename=file_path)
-        print("===========================")
+        print("=========================================")
         print(" -> MD5: " + get_file_md5(file_path))
-        print("===========================")
+        print("=========================================")
 
-        webbrowser.open("file://"+ folder_path)
+        webbrowser.open("file://" + folder_path)
     except Exception as e:
         print("\n### There is an error occurred! ###")
         print(e)
