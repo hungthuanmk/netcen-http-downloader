@@ -41,12 +41,15 @@ def get_file_info(file_url: str, verbose: bool = False, proxies: dict = None) ->
     # print(head_res.status_code)
     if head_res.status_code == 302:
         print(" -> Code 302 Found. Redirecting...")
-        head_res = requests.head(head_res.headers.get("Location"), proxies=proxies)
+        temp_url = head_res.headers.get("Location")
+        head_res = requests.head(temp_url, proxies=proxies)
 
-    # print(" -> Code", head_res.status_code)
-    if head_res.status_code == 405: # gg drive handling
-        print(" -> Supported single connection only")
-        return {"Single-Connection-Only": True, "File-URL": file_url}
+        print(" -> Code", head_res.status_code)
+        if head_res.status_code == 405: # gg drive handling
+            print(" -> Supported single connection only")
+            return {"Single-Connection-Only": True, "File-URL": file_url}
+        elif head_res.status_code == 200:
+            return {"Single-Connection-Only": True, "File-URL": temp_url}
 
     assert head_res.status_code == 200 # make sure successful request
     res_info = head_res.headers # take info from "head"-request headers
