@@ -43,7 +43,7 @@ def get_file_info(file_url: str, verbose: bool = False, proxies: dict = None) ->
         print(" -> Code 302 Found. Redirecting...")
         head_res = requests.head(head_res.headers.get("Location"), proxies=proxies)
 
-    print(" -> Code", head_res.status_code)
+    # print(" -> Code", head_res.status_code)
     if head_res.status_code == 405: # gg drive handling
         print(" -> Supported single connection only")
         return {"Single-Connection-Only": True, "File-URL": file_url}
