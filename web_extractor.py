@@ -198,7 +198,7 @@ def direct_link_generator(url):
         url_type, _ = mimetypes.guess_type(url)
         if url_type is None:
                  url_type = response.headers
-        if(('Content-Type' in url_type) and (url_type['Content-Type'] == 'text/html; charset=utf-8' or url_type['Content-Type'] == 'text/html; charset="utf-8"')):  # True if this url is text/html, False if is a file
+        if(('Content-Type' in url_type) and (url_type['Content-Type'] == 'text/html; charset=utf-8' or url_type['Content-Type'] == 'text/html; charset="utf-8"' or url_type['Content-Type'] == 'text/html; charset=UTF-8' )):  # True if this url is text/html, False if is a file
             web_domain = getDomain(url)
             if web_domain in domain_crawler_mapper:
                 direct_url = domain_crawler_mapper[web_domain](url)
@@ -220,5 +220,5 @@ def direct_link_generator(url):
 
 if __name__ == "__main__":
     data = direct_link_generator(
-        'https://www.facebook.com/rgb.vn/videos/1396783103844096/')
+            'https://www.youtube.com/watch?v=owEKTfe1Gno')
     print(data)
