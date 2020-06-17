@@ -38,7 +38,7 @@ def get_file_info(file_url: str, verbose: bool = False, proxies: dict = None) ->
     """
     print("\n-> Gathering file information... ", end="", flush=True)
     head_res = requests.head(file_url, proxies=proxies)
-    print(head_res.status_code)
+    # print(head_res.status_code)
     if head_res.status_code == 302:
         print(" -> Code 302 Found. Redirecting...")
         head_res = requests.head(head_res.headers.get("Location"), proxies=proxies)
