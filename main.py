@@ -1,5 +1,5 @@
 from downloader import get_file_info, print_file_info, download_with_progress_bar, get_file_md5
-from web_extractor import guess_type_of
+from web_extractor import direct_link_generator
 import webbrowser
 import os
 
@@ -34,7 +34,7 @@ def main():
 
     try:
         print("\n-> Crawling...", end="", flush=True)
-        file_url = guess_type_of(url)
+        file_name, file_url = direct_link_generator(url)
         print("Done\nFile URL:", file_url)
 
         file_info = get_file_info(file_url)
@@ -44,12 +44,8 @@ def main():
         connections_count = DEFAULT_CONNECTIONS if len(
             connections_count) == 0 else int(connections_count)
 
-        # file_path = filedialog.askopenfilename(
-        #     initialdir="/", title="Save file as", filetypes=(("jpeg files", "*.jpg"), ("All files", "*.*")))
-        # print(file_path)
         folder_path = os.path.join(os.getcwd(), DEFAULT_DOWNLOAD_FOLDER)
         os.makedirs(folder_path, exist_ok=True)
-        file_name = "a.mp4"
         file_path = os.path.join(folder_path, file_name)
 
         download_with_progress_bar(
